@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ByIconic.FuelWizard.APIs\ByIconic.FuelWizard.csproj" />
+    <ProjectReference Include="..\ByIconic.FuelWizard.APIs\ByIconic.FuelWizard.DataCollector.csproj" />
   </ItemGroup>
 
 </Project>

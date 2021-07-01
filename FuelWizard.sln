@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByIconic.FuelWizard", "ByIconic.FuelWizard.APIs\ByIconic.FuelWizard.csproj", "{7AC2357E-B014-46F8-AC25-DC40B5BA5F13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByIconic.FuelWizard.DataCollector", "ByIconic.FuelWizard.APIs\ByIconic.FuelWizard.DataCollector.csproj", "{7AC2357E-B014-46F8-AC25-DC40B5BA5F13}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuelWizard.UnitTests", "FuelWizard.UnitTests\FuelWizard.UnitTests.csproj", "{7A24BAEA-A6FE-488C-A179-0534E5693A8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuelWizardConsoleCollector", "FuelWizardConsoleCollector\FuelWizardConsoleCollector.csproj", "{06B5F6A3-A0C4-400F-A032-7A0F224B6E4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuelWizardConsoleCollector", "FuelWizardConsoleCollector\FuelWizardConsoleCollector.csproj", "{06B5F6A3-A0C4-400F-A032-7A0F224B6E4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
