@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading;
 
 namespace ByIconic.FuelWizard
@@ -57,19 +58,16 @@ namespace ByIconic.FuelWizard
 
             while(isCollecting)
             {
-                List<int> gasStationIds = new List<int>() { 1, 2};
-                //Get Locations and Gas Stations from DB and collect corresponding gas and diesel prices using the APIs.
+                List<Location> locations = new List<Location>();
+                //Get Locations from DB and collect gas and diesel prices of 
+                // corresponding gasstations using the APIs.
 
-                foreach (int i in gasStationIds)
+                foreach (Location l in locations)
                 {
-                    double latitude, longitude;
-                    latitude = longitude = 0;
-                    //Fetch coordinates from Geocode API
+                    //Fetch the 5 nearest gasstations of Location l, 
+                    // including their prices for diesel and gasoline
 
-                    double price = 0;
-                    //Fetch price of gasstation from E-Control API
-
-                    OnDataCollected?.Invoke(this, i, "haven't thought about that yet", price);
+                    OnDataCollected?.Invoke(this, -1, "haven't thought about that yet", -1);
                 }
 
 
