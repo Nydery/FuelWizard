@@ -1,4 +1,5 @@
-﻿using ByIconic.FuelWizard.Models;
+﻿using ByIconic.FuelWizard.DatabaseOperations;
+using ByIconic.FuelWizard.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -60,7 +61,7 @@ namespace ByIconic.FuelWizard.DataCollector
 
             while (isCollecting)
             {
-                List<Location> locations = new List<Location>();
+                List<Location> locations = new List<Location>(FuelWizardDatabaseConnector.GetLocations());
                 //Get Locations from DB and collect gas and diesel prices of 
                 // corresponding gasstations using the APIs.
 
