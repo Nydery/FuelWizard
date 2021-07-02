@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ByIconic.FuelWizard.APIs\ByIconic.FuelWizard.DataCollector.csproj" />
+    <ProjectReference Include="..\ByIconic.FuelWizard\ByIconic.FuelWizard.csproj" />
   </ItemGroup>
 
 </Project>

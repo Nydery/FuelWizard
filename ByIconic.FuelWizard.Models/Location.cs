@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ByIconic.FuelWizard
+namespace ByIconic.FuelWizard.Models
 {
     class Location
     {

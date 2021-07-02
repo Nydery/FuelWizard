@@ -6,4 +6,8 @@
     <RootNamespace>ByIconic.FuelWizard</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ByIconic.FuelWizard.Models\ByIconic.FuelWizard.Models.csproj" />
+  </ItemGroup>
+
 </Project>

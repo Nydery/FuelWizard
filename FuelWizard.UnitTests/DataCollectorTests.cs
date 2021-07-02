@@ -1,4 +1,4 @@
-using ByIconic.FuelWizard;
+using ByIconic.FuelWizard.DataCollector;
 using NUnit.Framework;
 
 namespace FuelWizard.UnitTests

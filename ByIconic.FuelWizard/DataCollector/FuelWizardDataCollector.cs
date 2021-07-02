@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ByIconic.FuelWizard.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
+using System.Text;
 using System.Threading;
 
-namespace ByIconic.FuelWizard
+namespace ByIconic.FuelWizard.DataCollector
 {
     public class FuelWizardDataCollector
     {
@@ -57,7 +58,7 @@ namespace ByIconic.FuelWizard
             if (!startNow)
                 DelayThread(delay);
 
-            while(isCollecting)
+            while (isCollecting)
             {
                 List<Location> locations = new List<Location>();
                 //Get Locations from DB and collect gas and diesel prices of 
