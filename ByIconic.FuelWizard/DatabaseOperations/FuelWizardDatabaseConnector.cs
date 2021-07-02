@@ -8,20 +8,17 @@ namespace ByIconic.FuelWizard.DatabaseOperations
 {
     class FuelWizardDatabaseConnector
     {
-        public static string Host { get; set; }
-        public static int Port { get; set; }
-        public static string Username { get; set; }
-        public static string Password { get; set; }
-        public static string Database { get; set; }
-
-        private static MySqlConnection conn = null;
-        private static MySqlCommand sqlCommand = null;
+        public static string Host { get; set; } = "dev.byiconic.at";
+        public static int Port { get; set; } = 3306;
+        public static string Username { get; set; } = "fuelwizard_datacollector";
+        public static string Password { get; set; } = "@DosfaOg*saFGJ?";
+        public static string Database { get; set; } = "fuelwizard";
 
         //Unsafe, because not threadsafe
         // Need to think of a way to ensure reliability and performance of this class and its function
 
 
-        private static void Connect(string host, int port, string user, string pass, string database)
+        private static void Connect(string host, int port, string user, string pass, string database, out MySqlConnection conn, out MySqlCommand sqlCommand)
         {
             StringBuilder connStringBuilder = new StringBuilder();
             connStringBuilder.Append("server=");
@@ -45,16 +42,11 @@ namespace ByIconic.FuelWizard.DatabaseOperations
             sqlCommand = conn.CreateCommand();
         }
 
-        private static void Disconnect()
-        {
-            conn.Close();
-        }
-
         internal static Location[] GetLocations()
         {
             List<Location> result = new List<Location>();
 
-            Connect(Host, Port, Username, Password, Database);
+            Connect(Host, Port, Username, Password, Database, out MySqlConnection conn, out MySqlCommand sqlCommand);
 
             sqlCommand.CommandText = "select * from cities;";
             MySqlDataReader reader = sqlCommand.ExecuteReader();
@@ -62,15 +54,15 @@ namespace ByIconic.FuelWizard.DatabaseOperations
             while (reader.Read())
             {
                 Location location = new Location();
-                location.Name = reader[0].ToString();
-                location.Longitude = Convert.ToInt32(reader[1]);
-                location.Latitude = Convert.ToInt32(reader[2]);
+                location.address = reader[0].ToString();
+                location.longitude = Convert.ToInt32(reader[1]);
+                location.latitude = Convert.ToInt32(reader[2]);
 
                 result.Add(location);
             }
 
             reader.Close();
-            Disconnect();
+            conn.Close();
 
             return result.ToArray();
         }
