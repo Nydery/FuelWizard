@@ -74,6 +74,7 @@ namespace ByIconic.FuelWizard.DataCollector
 
 
                 DelayThread(delay);
+                execCount++;
             }
         }
 
