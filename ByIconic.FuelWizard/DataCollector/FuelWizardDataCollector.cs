@@ -68,8 +68,9 @@ namespace ByIconic.FuelWizard.DataCollector
                 {
                     IEnumerable<Location> fetchedLocations = FuelWizardDatabaseConnector.GetLocations();
                     locations = new List<Location>(fetchedLocations);
-                }catch
+                }catch (Exception e)
                 {
+                    Debug.WriteLine($"Failed to connect to Database ({e.Message})");
                     StopCollectingData();
                     return;
                 }
@@ -84,12 +85,18 @@ namespace ByIconic.FuelWizard.DataCollector
                     List<GasStationPublic> gasStations = new List<GasStationPublic>(FuelWizardEControlAdapter.FetchGasStationsOfLocation(l));
 
                     foreach(GasStationPublic gasStation in gasStations)
-                    {
+                    {   
+                        if(!FuelWizardDatabaseConnector.ExistsGasStation(gasStation.id))
+                        {
+                            FuelWizardDatabaseConnector.InsertGasStation(gasStation);
+                        }
+
                         if(gasStation.prices.Length > 0)
                         {
                             string fuelType = gasStation.prices[0].fuelType;
                             double price = gasStation.prices[0].amount;
 
+                            FuelWizardDatabaseConnector.InsertPriceData(gasStation.id, fuelType, DateTime.Now, price);
                             OnDataCollected?.Invoke(this, gasStation.id, fuelType, price, DateTime.Now);
                         }
                     }

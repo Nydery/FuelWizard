@@ -1,4 +1,5 @@
-﻿using ByIconic.FuelWizard.DataCollector;
+﻿using ByIconic.FuelWizard;
+using ByIconic.FuelWizard.DataCollector;
 using System;
 
 namespace FuelWizardConsoleCollector
@@ -17,6 +18,8 @@ namespace FuelWizardConsoleCollector
         private static void Collector_OnDataCollected(object sender, int gasStationId, string fuelType, double price, DateTime time)
         {
             Console.WriteLine($"[{time}] {gasStationId}: {fuelType} {price}");
+
+            
         }
     }
 }

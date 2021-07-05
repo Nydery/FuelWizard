@@ -67,5 +67,47 @@ namespace ByIconic.FuelWizard.DatabaseOperations
 
             return result.ToArray();
         }
+
+        public static void InsertPriceData(int gasStationId, string fuelType, DateTime dateTime, double value)
+        {
+            Connect(Host, Port, Username, Password, Database, out MySqlConnection conn, out MySqlCommand sqlCommand);
+
+            string val = value.ToString().Replace(',', '.');
+
+            sqlCommand.CommandText = $"insert into prices (gasstationId, fuelType, datetime, value) values ({gasStationId}, '{fuelType}', '{dateTime}', {val})";  
+            sqlCommand.ExecuteNonQuery();
+
+            conn.Close();
+        }
+
+        internal static bool ExistsGasStation(int id)
+        {
+            bool result = false;
+
+            Connect(Host, Port, Username, Password, Database, out MySqlConnection conn, out MySqlCommand sqlCommand);
+
+            sqlCommand.CommandText = $"select * from gasstations where id={id}";
+            MySqlDataReader reader = sqlCommand.ExecuteReader();
+
+            if (reader.Read())
+                result = true;
+
+            reader.Close();
+
+            return result;
+        }
+
+        internal static void InsertGasStation(GasStationPublic gasStation)
+        {
+            Connect(Host, Port, Username, Password, Database, out MySqlConnection conn, out MySqlCommand sqlCommand);
+
+            string longitude = gasStation.location.longitude.ToString().Replace(',', '.');
+            string latitude = gasStation.location.latitude.ToString().Replace(',', '.');
+
+            sqlCommand.CommandText = $"insert into gasstations (id, name, longitude, latitude) values({gasStation.id}, '{gasStation.name}', {longitude}, {latitude})";
+            sqlCommand.ExecuteNonQuery();
+
+            conn.Close();
+        }
     }
 }
