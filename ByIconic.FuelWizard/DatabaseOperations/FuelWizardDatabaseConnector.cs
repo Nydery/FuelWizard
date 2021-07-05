@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using static ByIconic.FuelWizard.Models.API.EControlClasses;
 
 namespace ByIconic.FuelWizard.DatabaseOperations
 {
@@ -42,7 +43,7 @@ namespace ByIconic.FuelWizard.DatabaseOperations
             sqlCommand = conn.CreateCommand();
         }
 
-        internal static Location[] GetLocations()
+        internal static IEnumerable<Location> GetLocations()
         {
             List<Location> result = new List<Location>();
 

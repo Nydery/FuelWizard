@@ -1,10 +1,11 @@
-﻿using ByIconic.FuelWizard.DatabaseOperations;
-using ByIconic.FuelWizard.Models;
+﻿using ByIconic.FuelWizard.APIOperations;
+using ByIconic.FuelWizard.DatabaseOperations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using static ByIconic.FuelWizard.Models.API.EControlClasses;
 
 namespace ByIconic.FuelWizard.DataCollector
 {
@@ -15,10 +16,10 @@ namespace ByIconic.FuelWizard.DataCollector
 
         public bool IsCollecting => isCollecting;
 
-        public delegate void DataCollected(object sender, int gasStationId, string fuelType, double price);
+        public delegate void DataCollected(object sender, int gasStationId, string fuelType, double price, DateTime time);
         public event DataCollected OnDataCollected;
 
-        public bool StartCollectingData(TimeSpan delay, bool startNow)
+        public bool StartCollectingData(TimeSpan delay, bool startNow = true)
         {
             if (isCollecting)
                 return false;
@@ -61,7 +62,18 @@ namespace ByIconic.FuelWizard.DataCollector
 
             while (isCollecting)
             {
-                List<Location> locations = new List<Location>(FuelWizardDatabaseConnector.GetLocations());
+                List<Location> locations;
+
+                try
+                {
+                    IEnumerable<Location> fetchedLocations = FuelWizardDatabaseConnector.GetLocations();
+                    locations = new List<Location>(fetchedLocations);
+                }catch
+                {
+                    StopCollectingData();
+                    return;
+                }
+                
                 //Get Locations from DB and collect gas and diesel prices of 
                 // corresponding gasstations using the APIs.
 
@@ -69,8 +81,18 @@ namespace ByIconic.FuelWizard.DataCollector
                 {
                     //Fetch the 5 nearest gasstations of Location l, 
                     // including their prices for diesel and gasoline
+                    List<GasStationPublic> gasStations = new List<GasStationPublic>(FuelWizardEControlAdapter.FetchGasStationsOfLocation(l));
 
-                    OnDataCollected?.Invoke(this, -1, "haven't thought about that yet", -1);
+                    foreach(GasStationPublic gasStation in gasStations)
+                    {
+                        if(gasStation.prices.Length > 0)
+                        {
+                            string fuelType = gasStation.prices[0].fuelType;
+                            double price = gasStation.prices[0].amount;
+
+                            OnDataCollected?.Invoke(this, gasStation.id, fuelType, price, DateTime.Now);
+                        }
+                    }
                 }
 
 

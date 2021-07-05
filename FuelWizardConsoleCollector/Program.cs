@@ -1,5 +1,5 @@
-﻿using System;
-using ByIconic.FuelWizard;
+﻿using ByIconic.FuelWizard.DataCollector;
+using System;
 
 namespace FuelWizardConsoleCollector
 {
@@ -9,14 +9,14 @@ namespace FuelWizardConsoleCollector
         {
             FuelWizardDataCollector collector = new FuelWizardDataCollector();
             collector.OnDataCollected += Collector_OnDataCollected;
-            collector.StartCollectingData(new TimeSpan(0, 0, 1), false);
+            collector.StartCollectingData(new TimeSpan(0, 0, 10));
 
             Console.ReadKey();
         }
 
-        private static void Collector_OnDataCollected(object sender, int gasStationId, string fuelType, double price)
+        private static void Collector_OnDataCollected(object sender, int gasStationId, string fuelType, double price, DateTime time)
         {
-            Console.WriteLine("Notified");
+            Console.WriteLine($"[{time}] {gasStationId}: {fuelType} {price}");
         }
     }
 }
