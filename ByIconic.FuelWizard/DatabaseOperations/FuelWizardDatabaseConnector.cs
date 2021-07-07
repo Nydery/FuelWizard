@@ -56,8 +56,8 @@ namespace ByIconic.FuelWizard.DatabaseOperations
             {
                 Location location = new Location();
                 location.address = reader[0].ToString();
-                location.longitude = Convert.ToInt32(reader[1]);
-                location.latitude = Convert.ToInt32(reader[2]);
+                location.longitude = float.Parse(reader[1].ToString());
+                location.latitude = float.Parse(reader[2].ToString());
 
                 result.Add(location);
             }
