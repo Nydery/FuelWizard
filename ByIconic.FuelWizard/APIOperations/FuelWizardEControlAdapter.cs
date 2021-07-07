@@ -18,14 +18,27 @@ namespace ByIconic.FuelWizard.APIOperations
             string latitude = location.latitude.ToString().Replace(',', '.');
             string longitude = location.longitude.ToString().Replace(',', '.');
 
-            var apiTask = GetApiResponseAsync($"https://api.e-control.at/sprit/1.0/search/gas-stations/by-address?latitude={latitude}&longitude={longitude}&fuelType=DIE");
+            string baseRequest = $"https://api.e-control.at/sprit/1.0/search/gas-stations/by-address?latitude={latitude}&longitude={longitude}";
+
+            //Add Prices for Diesel
+            var apiTask = GetApiResponseAsync($"{baseRequest}&fuelType=DIE");
             apiTask.Wait();
 
             var replyDeserialized = JsonSerializer.Deserialize(apiTask.Result, typeof(GasStationPublic[]));
             result.AddRange((GasStationPublic[])replyDeserialized);
 
+
+            //Add Prices for Super aka Gasoline
+            apiTask = GetApiResponseAsync($"{baseRequest}&fuelType=SUP");
+            apiTask.Wait();
+
+            replyDeserialized = JsonSerializer.Deserialize(apiTask.Result, typeof(GasStationPublic[]));
+            result.AddRange((GasStationPublic[])replyDeserialized);
+
+
             return result;
         }
+
 
         internal static async Task<string> GetApiResponseAsync(string request)
         {
