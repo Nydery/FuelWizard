@@ -9,6 +9,8 @@ namespace ByIconic.FuelWizard.DatabaseOperations
 {
     class FuelWizardDatabaseConnector
     {
+        private const string MySqlDateTimeFormat = "yyyy-MM-dd H:mm:ss";
+
         public static string Host { get; set; } = "dev.byiconic.at";
         public static int Port { get; set; } = 3306;
         public static string Username { get; set; } = "fuelwizard_datacollector";
@@ -74,7 +76,7 @@ namespace ByIconic.FuelWizard.DatabaseOperations
 
             string val = value.ToString().Replace(',', '.');
 
-            sqlCommand.CommandText = $"insert into prices (gasstationId, fuelType, datetime, value) values ({gasStationId}, '{fuelType}', '{dateTime}', {val})";  
+            sqlCommand.CommandText = $"insert into prices (gasstationId, fuelType, datetime, value) values ({gasStationId}, '{fuelType}', '{dateTime.ToString(MySqlDateTimeFormat)}', {val})";  
             sqlCommand.ExecuteNonQuery();
 
             conn.Close();
