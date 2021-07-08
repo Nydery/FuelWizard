@@ -18,6 +18,8 @@ namespace ByIconic.FuelWizard.DataCollector
 
         public delegate void DataCollected(object sender, int gasStationId, string fuelType, double price, DateTime time);
         public event DataCollected OnDataCollected;
+        public event EventHandler OnDataCollectionStarted;
+        public event EventHandler OnDataCollectionStopped;
 
         public bool StartCollectingData(TimeSpan delay, bool startNow = true)
         {
@@ -29,7 +31,7 @@ namespace ByIconic.FuelWizard.DataCollector
             collectingThread.IsBackground = true;
             collectingThread.Start();
 
-            Debug.WriteLine("StartCollectingData() : Started collecting");
+            Debug.WriteLine("StartCollectingData() : Started thread");
 
             return true;
         }
@@ -59,6 +61,8 @@ namespace ByIconic.FuelWizard.DataCollector
 
             if (!startNow)
                 DelayThread(delay);
+
+            OnDataCollectionStarted?.Invoke(this, EventArgs.Empty);
 
             while (isCollecting)
             {
@@ -106,6 +110,8 @@ namespace ByIconic.FuelWizard.DataCollector
                 DelayThread(delay);
                 execCount++;
             }
+
+            OnDataCollectionStopped?.Invoke(this, EventArgs.Empty);
         }
 
         private void DelayThread(TimeSpan delay)
