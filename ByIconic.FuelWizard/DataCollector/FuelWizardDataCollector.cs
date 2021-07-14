@@ -76,6 +76,7 @@ namespace ByIconic.FuelWizard.DataCollector
                 {
                     Debug.WriteLine($"Failed to connect to Database ({e.Message})");
                     StopCollectingData();
+                    OnDataCollectionStopped?.Invoke(this, EventArgs.Empty);
                     return;
                 }
                 
