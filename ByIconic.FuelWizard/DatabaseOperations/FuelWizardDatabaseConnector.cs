@@ -17,10 +17,6 @@ namespace ByIconic.FuelWizard.DatabaseOperations
         public static string Password { get; set; } = "@DosfaOg*saFGJ?";
         public static string Database { get; set; } = "fuelwizard";
 
-        //Unsafe, because not threadsafe
-        // Need to think of a way to ensure reliability and performance of this class and its function
-
-
         private static void Connect(string host, int port, string user, string pass, string database, out MySqlConnection conn, out MySqlCommand sqlCommand)
         {
             StringBuilder connStringBuilder = new StringBuilder();
