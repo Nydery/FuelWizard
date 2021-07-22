@@ -2,7 +2,7 @@
   "profiles": {
     "FuelWizardConsoleCollector": {
       "commandName": "Project",
-      "commandLineArgs": "01:00:00"
+      "commandLineArgs": "00:02"
     }
   }
 }

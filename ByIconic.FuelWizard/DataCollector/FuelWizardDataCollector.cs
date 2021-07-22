@@ -13,21 +13,22 @@ namespace ByIconic.FuelWizard.DataCollector
     {
         private Thread collectingThread = null;
         private volatile bool isCollecting = false;
-
         public bool IsCollecting => isCollecting;
+
+        private DateTime lastExecution;
 
         public delegate void DataCollected(object sender, int gasStationId, string fuelType, double price, DateTime time);
         public event DataCollected OnDataCollected;
         public event EventHandler OnDataCollectionStarted;
         public event EventHandler OnDataCollectionStopped;
 
-        public bool StartCollectingData(TimeSpan delay, bool startNow = true)
+        public bool StartCollectingData(TimeSpan delay)
         {
             if (isCollecting)
                 return false;
 
             isCollecting = true;
-            collectingThread = new Thread(() => CollectData(delay, startNow));
+            collectingThread = new Thread(() => CollectData(delay));
             collectingThread.IsBackground = true;
             collectingThread.Start();
 
@@ -55,12 +56,9 @@ namespace ByIconic.FuelWizard.DataCollector
             Debug.WriteLine("StopCollectingData() : Collecting stopped");
         }
 
-        private void CollectData(TimeSpan delay, bool startNow)
+        private void CollectData(TimeSpan delay)
         {
-            int execCount = 0;
-
-            if (!startNow)
-                DelayThread(delay);
+            WaitForNextRepetition(delay, true);
 
             OnDataCollectionStarted?.Invoke(this, EventArgs.Empty);
 
@@ -108,11 +106,47 @@ namespace ByIconic.FuelWizard.DataCollector
                 }
 
 
-                DelayThread(delay);
-                execCount++;
+                WaitForNextRepetition(delay);
             }
 
             OnDataCollectionStopped?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void WaitForNextRepetition(TimeSpan delay, bool firstMethodCall = false)
+        {
+            if(firstMethodCall)
+            {
+                DateTime dateTime = DateTime.Now;
+
+                //Change DateTime to full hour
+                dateTime = dateTime.AddSeconds(-dateTime.Second);
+                dateTime = dateTime.AddMinutes(-dateTime.Minute);
+                dateTime = dateTime.AddMilliseconds(-dateTime.Millisecond);
+
+                //Add 1 hour, to reach next full hour
+                dateTime = dateTime.AddHours(1);
+
+                //No need to check if the time is on the next day or not, bc DateTime handles that itself :)
+
+                WaitForDateTime(dateTime);        //Comment out for debugging
+                lastExecution = dateTime;
+
+
+                //Put this in for debugging
+                //lastExecution = DateTime.Now;
+            }
+            else
+            {
+                DateTime dateTime = lastExecution.Add(delay);
+                WaitForDateTime(dateTime);
+                lastExecution = dateTime;
+            }
+        }
+
+        private void WaitForDateTime(DateTime dateTime)
+        {
+            TimeSpan timeToWait = dateTime - DateTime.Now;
+            DelayThread(timeToWait);
         }
 
         private void DelayThread(TimeSpan delay)
