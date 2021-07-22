@@ -15,7 +15,7 @@ namespace FuelWizard.UnitTests
         [Test]
         public void Test1()
         {
-            Assert.IsTrue(dataCollector.StartCollectingData(new System.TimeSpan(0, 0, 10), false), "Data Collection didnt start.");
+            Assert.IsTrue(dataCollector.StartCollectingData(new System.TimeSpan(0, 0, 10)), "Data Collection didnt start.");
             dataCollector.StopCollectingData();
             Assert.IsFalse(dataCollector.IsCollecting, "Data Collection didnt stop.");
         }
