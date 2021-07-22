@@ -10,8 +10,8 @@ namespace FuelWizardConsoleCollector
         {
             if(args.Length < 1)
             {
-                Console.WriteLine("You must specify the collection delay. Usage: \"current.exe <delay in following format (hh:mm:ss)>\"\nExample: " +
-                    "\n\"FuelWizardConsoleCollector.exe 01:00:00\" for 1 hour delay");
+                Console.WriteLine("You must specify the collection delay. Usage: \"current.exe <delay in following format (hh:mm)>\"\nExample: " +
+                    "\n\"FuelWizardConsoleCollector.exe 01:00\" for 1 hour delay");
                 return;
             }
 
@@ -26,28 +26,12 @@ namespace FuelWizardConsoleCollector
                 Console.WriteLine("Delay is not parsable. Specify the delay in this format: hh:mm:ss!");
                 return;
             }
-            bool startRightAway = true;
-
-            if(args.Length == 2)
-            {
-                try
-                {
-                    startRightAway = bool.Parse(args[1]);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Second parameter is not parsable. Specify whether or not the DataCollector should start right away using \"True\" or \"False\"!\n" +
-                        "You can also leave it blank, which means that collecting will start directly.");
-                    return;
-                }
-                
-            }
 
             //Print current status
             Console.WriteLine("FuelWizard - DataCollector");
             Console.WriteLine(" - ByIconic 2021");
-            Console.WriteLine("Delay: " + delay);
-            Console.WriteLine("Starting: " + (startRightAway ? "Now" : "After delay"));
+            Console.WriteLine($"Delay: {delay.Hours.ToString("00")}h {delay.Minutes.ToString("00")}min");
+            Console.WriteLine("Starting: At next full hour");
 
             Console.WriteLine();
 
@@ -55,7 +39,7 @@ namespace FuelWizardConsoleCollector
             collector.OnDataCollected += Collector_OnDataCollected;
             collector.OnDataCollectionStarted += Collector_OnDataCollectionStarted;
             collector.OnDataCollectionStopped += Collector_OnDataCollectionStopped;
-            collector.StartCollectingData(delay, startRightAway);
+            collector.StartCollectingData(delay);
 
             Console.ReadKey();
 
