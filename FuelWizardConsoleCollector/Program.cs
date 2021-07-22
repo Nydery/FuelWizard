@@ -29,7 +29,7 @@ namespace FuelWizardConsoleCollector
 
             //Print current status
             Console.WriteLine("FuelWizard - DataCollector");
-            Console.WriteLine(" - ByIconic 2021");
+            Console.WriteLine("V2.0 - ByIconic 2021");
             Console.WriteLine($"Delay: {delay.Hours.ToString("00")}h {delay.Minutes.ToString("00")}min");
             Console.WriteLine("Starting: At next full hour");
 
