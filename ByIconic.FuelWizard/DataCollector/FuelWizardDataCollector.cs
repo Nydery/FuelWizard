@@ -1,5 +1,6 @@
 ﻿using ByIconic.FuelWizard.APIOperations;
 using ByIconic.FuelWizard.DatabaseOperations;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +23,8 @@ namespace ByIconic.FuelWizard.DataCollector
         public event EventHandler OnDataCollectionStarted;
         public event EventHandler OnDataCollectionStopped;
 
+        private static readonly ILog log = LogManager.GetLogger(typeof(FuelWizardDataCollector));
+
         public bool StartCollectingData(TimeSpan delay)
         {
             if (isCollecting)
@@ -32,7 +35,7 @@ namespace ByIconic.FuelWizard.DataCollector
             collectingThread.IsBackground = true;
             collectingThread.Start();
 
-            Debug.WriteLine("StartCollectingData() : Started thread");
+            log.Info("StartCollectingData() : Started thread");
 
             return true;
         }
@@ -48,12 +51,12 @@ namespace ByIconic.FuelWizard.DataCollector
             }
             catch (ThreadAbortException)
             {
-                Debug.WriteLine("StopCollectingData() : Thread abort threw exception");
+                log.Info("StopCollectingData() : Thread abort threw exception");
             }
 
             isCollecting = false;
 
-            Debug.WriteLine("StopCollectingData() : Collecting stopped");
+            log.Info("StopCollectingData() : Collecting stopped");
         }
 
         private void CollectData(TimeSpan delay)
@@ -72,7 +75,7 @@ namespace ByIconic.FuelWizard.DataCollector
                     locations = new List<Location>(fetchedLocations);
                 }catch (Exception e)
                 {
-                    Debug.WriteLine($"Failed to connect to Database ({e.Message})");
+                    log.Error("Failed to connect to Database", e);
                     StopCollectingData();
                     OnDataCollectionStopped?.Invoke(this, EventArgs.Empty);
                     return;
@@ -85,7 +88,17 @@ namespace ByIconic.FuelWizard.DataCollector
                 {
                     //Fetch the 5 nearest gasstations of Location l, 
                     // including their prices for diesel and gasoline
-                    List<GasStationPublic> gasStations = new List<GasStationPublic>(FuelWizardEControlAdapter.FetchGasStationsOfLocation(l));
+                    List<GasStationPublic> gasStations;
+                    try
+                    {
+                        gasStations = new List<GasStationPublic>(FuelWizardEControlAdapter.FetchGasStationsOfLocation(l));
+                    }
+                    catch
+                    {
+                        log.Error($"Fetching gasstations from API failed for location:  {l.postalCode} {l.city}, {l.address}");
+                        continue;
+                    }
+                    
 
                     foreach(GasStationPublic gasStation in gasStations)
                     {   
@@ -151,7 +164,7 @@ namespace ByIconic.FuelWizard.DataCollector
 
         private void DelayThread(TimeSpan delay)
         {
-            Debug.WriteLine($"Data collection delayed by {delay.TotalSeconds} seconds");
+            log.Info($"Data collection delayed by {delay.TotalSeconds} seconds (until {DateTime.Now.AddSeconds(delay.TotalSeconds)})");
             Thread.Sleep(delay);
         }
     }

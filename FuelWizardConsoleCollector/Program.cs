@@ -1,13 +1,28 @@
-﻿using ByIconic.FuelWizard;
-using ByIconic.FuelWizard.DataCollector;
+﻿using ByIconic.FuelWizard.DataCollector;
+using log4net;
+using log4net.Config;
 using System;
+using System.IO;
+using System.Reflection;
 
 namespace FuelWizardConsoleCollector
 {
     class Program
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(Program));
+
         static void Main(string[] args)
         {
+            //Configure log4net logger
+            string execPath = Assembly.GetEntryAssembly().Location;
+            string execParentDir = Directory.GetParent(execPath).ToString();
+            string logConfigFilePath = Path.Combine(execParentDir, "log4net-config.xml");
+
+            XmlConfigurator.Configure(new FileInfo(logConfigFilePath));
+
+
+            log.Info("Application started.");
+
             if(args.Length < 1)
             {
                 Console.WriteLine("You must specify the collection delay. Usage: \"current.exe <delay in following format (hh:mm)>\"\nExample: " +
@@ -29,7 +44,7 @@ namespace FuelWizardConsoleCollector
 
             //Print current status
             Console.WriteLine("FuelWizard - DataCollector");
-            Console.WriteLine("V2.0 - ByIconic 2021");
+            Console.WriteLine("V2.1 - ByIconic 2021");
             Console.WriteLine($"Delay: {delay.Hours.ToString("00")}h {delay.Minutes.ToString("00")}min");
             Console.WriteLine("Starting: At next full hour");
 
@@ -45,6 +60,8 @@ namespace FuelWizardConsoleCollector
 
             collector.OnDataCollected -= Collector_OnDataCollected;
             collector.StopCollectingData();
+
+            log.Info("Application stopped.");
         }
 
         private static void Collector_OnDataCollectionStopped(object sender, EventArgs e)
