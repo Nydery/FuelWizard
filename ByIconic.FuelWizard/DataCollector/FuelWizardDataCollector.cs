@@ -61,7 +61,7 @@ namespace ByIconic.FuelWizard.DataCollector
 
         private void CollectData(TimeSpan delay)
         {
-            WaitForNextRepetition(delay, true);
+            //WaitForNextRepetition(delay, true);
 
             OnDataCollectionStarted?.Invoke(this, EventArgs.Empty);
 
@@ -93,9 +93,9 @@ namespace ByIconic.FuelWizard.DataCollector
                     {
                         gasStations = new List<GasStationPublic>(FuelWizardEControlAdapter.FetchGasStationsOfLocation(l));
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        log.Error($"Fetching gasstations from API failed for location:  {l.postalCode} {l.city}, {l.address}");
+                        log.Error($"Fetching gasstations from API failed for location:  {l.postalCode} {l.city}, {l.address}", e);
                         continue;
                     }
                     
