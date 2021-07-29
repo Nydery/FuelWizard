@@ -61,7 +61,7 @@ namespace ByIconic.FuelWizard.DataCollector
 
         private void CollectData(TimeSpan delay)
         {
-            //WaitForNextRepetition(delay, true);
+            WaitForNextRepetition(delay, true);
 
             OnDataCollectionStarted?.Invoke(this, EventArgs.Empty);
 
