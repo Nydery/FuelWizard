@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -10,6 +11,9 @@ namespace ByIconic.FuelWizard.APIOperations
     class FuelWizardEControlAdapter
     {
         static HttpClient httpClient = new HttpClient();
+
+        static DateTime lastApiCallTime = DateTime.MinValue;
+        static TimeSpan delayBetweenAPICalls = new TimeSpan(0, 0, 0, 0, 200);
 
         internal static IEnumerable<GasStationPublic> FetchGasStationsOfLocation(Location location)
         {
@@ -28,7 +32,7 @@ namespace ByIconic.FuelWizard.APIOperations
             result.AddRange((GasStationPublic[])replyDeserialized);
 
 
-            //Add Prices for Super aka Gasoline
+            //Add Prices for Super aka Gasoline or Petrol
             apiTask = GetApiResponseAsync($"{baseRequest}&fuelType=SUP");
             apiTask.Wait();
 
@@ -42,6 +46,9 @@ namespace ByIconic.FuelWizard.APIOperations
 
         internal static async Task<string> GetApiResponseAsync(string request)
         {
+            //Check if the delay between API Calls is already over, and wait if not
+            while ((lastApiCallTime + delayBetweenAPICalls) > DateTime.Now);
+
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
@@ -50,6 +57,9 @@ namespace ByIconic.FuelWizard.APIOperations
             var stringTask = httpClient.GetStringAsync(request);
 
             var msg = await stringTask;
+
+            //Reset last API Call time
+            lastApiCallTime = DateTime.Now;
 
             return msg;
         }
